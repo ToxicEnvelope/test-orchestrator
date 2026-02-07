@@ -101,7 +101,7 @@ export function createMockAppConfigurationClient() {
                 "Orchestration:ConcurrencyLimit": "10",
 
                 "Network:Enabled": "true",
-                "Network:VnetName": "Isrotel-Automation-Resources-vnets",
+                "Network:VnetName": "Test-Automation-Resources-vnets",
                 // Optional keys (left blank by default)
                 "Network:SubnetResourceId": "",
                 "Network:SubnetName": "",
@@ -128,4 +128,5 @@ export const mockAzureConfig: AzureConfig = {
     subscriptionId: "test-subscription-id",
     resourceGroup: "test-rg",
     location: "westeurope",
+
 };
