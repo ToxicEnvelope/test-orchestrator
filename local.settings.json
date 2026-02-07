@@ -1,0 +1,25 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+
+    "AZURE_SUBSCRIPTION_ID": "fbbe6ecd-5c5d-4bfa-91fa-45ba94295f87",
+    "RESOURCE_GROUP_NAME": "Isrotel-Automation",
+    "AZURE_LOCATION": "westeu",
+
+    "ACR_SERVER": "isrotelautomation.azurecr.io",
+
+    "CONTAINER_IMAGE": "isrotelautomation.azurecr.io/test-automation-runner:latest",
+    "CONTAINER_CPU": "1.0",
+    "CONTAINER_MEMORY_GB": "2.0",
+
+    "TEST_ENVIRONMENTS": "prod,stage,qa",
+    "TEST_PLATFORMS": "web,mobile,api",
+
+    "CLEANUP_AGE_HOURS": "24",
+    "SCHEDULE_ENABLED": "true",
+
+    "APP_CONFIG_CONNECTION_STRING": "https://test-automation-config.azconfig.io"
+  }
+}

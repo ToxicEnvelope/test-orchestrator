@@ -1,0 +1,136 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  azureSubscription: "Isrotel-Automation-SC"
+  resourceGroupName: "Isrotel-Automation"
+  functionAppName: "test-orchestrator"
+  functionPlanName: "test-orchestrator-plan"
+
+  acrName: "isrotelautomation"
+  imageRepository: "test-orchestrator-runner"
+
+steps:
+  - checkout: none
+
+  # Create the Function App if it doesn't exist yet (Plan + Storage + Function App)
+  - task: AzureCLI@2
+    displayName: "Ensure Function App exists (create if missing)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        set -euo pipefail
+
+        RG="$(resourceGroupName)"
+        APP="$(functionAppName)"
+        PLAN="$(functionPlanName)"
+
+        # Use the RG location automatically
+        LOC="$(az group show -n "$RG" --query location -o tsv)"
+        echo "Using location: $LOC"
+
+        # If the Function App exists - we're done
+        if az functionapp show -g "$RG" -n "$APP" 1>/dev/null 2>&1; then
+          echo "Function App already exists: $APP"
+          exit 0
+        fi
+
+        echo "Function App not found. Creating..."
+
+        # Ensure Linux Premium plan exists (containers require Premium/Dedicated; EP1 is common)
+        if ! az functionapp plan show -g "$RG" -n "$PLAN" 1>/dev/null 2>&1; then
+          echo "Creating plan: $PLAN"
+          az functionapp plan create \
+            -g "$RG" -n "$PLAN" -l "$LOC" \
+            --sku EP1 \
+            --is-linux true 1>/dev/null
+        else
+          echo "Plan already exists: $PLAN"
+        fi
+
+        # Storage account name must be globally unique, 3-24 chars, lowercase letters/numbers only
+        APP_SAN="$(echo "$APP" | tr -cd 'a-z0-9')"
+        HASH="$(echo -n "$RG-$APP" | sha1sum | cut -c1-6)"
+        STORAGE="st${APP_SAN:0:14}${HASH}"
+        echo "Using storage account: $STORAGE"
+
+        if ! az storage account show -g "$RG" -n "$STORAGE" 1>/dev/null 2>&1; then
+          echo "Creating storage account: $STORAGE"
+          az storage account create \
+            -g "$RG" -n "$STORAGE" -l "$LOC" \
+            --sku Standard_LRS \
+            --allow-blob-public-access false 1>/dev/null
+        else
+          echo "Storage already exists: $STORAGE"
+        fi
+
+        # Create Linux Function App configured for custom container runtime
+        az functionapp create \
+          -g "$RG" -n "$APP" -p "$PLAN" \
+          -s "$STORAGE" \
+          --os-type Linux \
+          --runtime node \
+          --functions-version 4 1>/dev/null
+
+        echo "Created Function App: $APP"
+
+  - task: AzureCLI@2
+    displayName: "Show Function App info"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        set -euo pipefail
+        az functionapp show -g "$(resourceGroupName)" -n "$(functionAppName)" -o table
+
+  # 1) Resolve the newest tag in ACR for the runner repo
+  - task: AzureCLI@2
+    displayName: "Resolve latest runner image from ACR"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        set -euo pipefail
+
+        ACR_LOGIN_SERVER="$(az acr show -n "$(acrName)" --query loginServer -o tsv)"
+        echo "##vso[task.setvariable variable=acrLoginServer]$ACR_LOGIN_SERVER"
+
+        LATEST_TAG="$(az acr repository show-tags \
+          -n "$(acrName)" \
+          --repository "$(imageRepository)" \
+          --detail \
+          --orderby time_desc \
+          --top 1 \
+          --query "[0].name" -o tsv)"
+
+        if [ -z "$LATEST_TAG" ]; then
+          echo "ERROR: No tags found in $(imageRepository)"
+          exit 1
+        fi
+
+        IMAGE_NAME="$ACR_LOGIN_SERVER/$(imageRepository):$LATEST_TAG"
+        echo "Deploying image: $IMAGE_NAME"
+        echo "##vso[task.setvariable variable=imageName]$IMAGE_NAME"
+
+  # 2) Deploy that image to the Function App (custom container)
+  - task: AzureFunctionAppContainer@1
+    displayName: "Deploy latest image to Function App"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      appName: "$(functionAppName)"
+      imageName: "$(imageName)"
+      appSettings: >
+        -WEBSITES_PORT 80
+        -WEBSITES_ENABLE_APP_SERVICE_STORAGE false
