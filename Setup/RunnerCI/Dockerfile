@@ -5,7 +5,7 @@
 # Builds TypeScript -> dist/, prunes dev deps, and runs once:
 #   node dist/job/main.js
 # ------------------------------------------------------------
-ARG BASE_IMAGE=isrotelautomation.azurecr.io/test-orchestrator-base:latest
+ARG BASE_IMAGE=test-automation.azurecr.io/test-orchestrator-base:latest
 
 # ---- build stage (tsc + dev deps) ----
 FROM node:20-bookworm-slim AS build
@@ -37,4 +37,5 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 
 # Container Apps Job executes this once per run (then container exits)
+
 CMD ["node", "dist/src/job/main.js"]
