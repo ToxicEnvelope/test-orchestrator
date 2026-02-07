@@ -4,13 +4,13 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "node",
 
-    "AZURE_SUBSCRIPTION_ID": "fbbe6ecd-5c5d-4bfa-91fa-45ba94295f87",
-    "RESOURCE_GROUP_NAME": "Isrotel-Automation",
+    "AZURE_SUBSCRIPTION_ID": "11111111-2222-3333-4444-555555555555",
+    "RESOURCE_GROUP_NAME": "RG-Automation",
     "AZURE_LOCATION": "westeu",
 
-    "ACR_SERVER": "isrotelautomation.azurecr.io",
+    "ACR_SERVER": "test-automation.azurecr.io",
 
-    "CONTAINER_IMAGE": "isrotelautomation.azurecr.io/test-automation-runner:latest",
+    "CONTAINER_IMAGE": "test-automation.azurecr.io/test-automation-runner:latest",
     "CONTAINER_CPU": "1.0",
     "CONTAINER_MEMORY_GB": "2.0",
 
@@ -22,4 +22,5 @@
 
     "APP_CONFIG_CONNECTION_STRING": "https://test-automation-config.azconfig.io"
   }
+
 }
