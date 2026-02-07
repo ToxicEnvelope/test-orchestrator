@@ -54,12 +54,12 @@ describe("OrchestrationService (Container Apps Jobs)", () => {
         ];
 
         const containerConfig = {
-            image: "isrotelautomation.azurecr.io/test-orchestrator-runner:latest",
+            image: "test-automation.azurecr.io/test-orchestrator-runner:latest",
             cpu: 1.0,
             memoryGB: 1.5,
             network: {
                 enabled: true,
-                vnetName: "Isrotel-Automation-Resources-vnets",
+                vnetName: "Test-Automation-Resources-vnets",
             },
             runnerEnv: {
                 APP_CONFIG_ENDPOINT: "https://example.appconfig.io",
@@ -120,7 +120,7 @@ describe("OrchestrationService (Container Apps Jobs)", () => {
         const provided: TestConfig[] = [{ env: "stage", platform: "web" }];
 
         const containerConfig = {
-            image: "isrotelautomation.azurecr.io/test-orchestrator-runner:latest",
+            image: "test-automation.azurecr.io/test-orchestrator-runner:latest",
             cpu: 1.0,
             memoryGB: 1.5,
             runnerEnv: {
@@ -162,7 +162,7 @@ describe("OrchestrationService (Container Apps Jobs)", () => {
         ];
 
         const containerConfig = {
-            image: "isrotelautomation.azurecr.io/test-orchestrator-runner:latest",
+            image: "test-automation.azurecr.io/test-orchestrator-runner:latest",
             cpu: 1.0,
             memoryGB: 1.5,
         };
@@ -201,3 +201,4 @@ describe("OrchestrationService (Container Apps Jobs)", () => {
         expect(response.message).toContain("1 execution(s) failed");
     });
 });
+
