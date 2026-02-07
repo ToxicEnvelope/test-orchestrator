@@ -126,7 +126,7 @@ describe("ConfigService", () => {
 
         // Default network intent
         expect(cfg.network?.enabled).toBe(true);
-        expect(cfg.network?.vnetName).toBe("Isrotel-Automation-Resources-vnets");
+        expect(cfg.network?.vnetName).toBe("Test-Automation-Resources-vnets");
 
         // runnerEnv should at least include injected APP_CONFIG_ENDPOINT (Option B)
         expect(cfg.runnerEnv?.APP_CONFIG_ENDPOINT).toBe("https://orchestrator.azconfig.io");
@@ -151,7 +151,7 @@ describe("ConfigService", () => {
         expect(cfg.network).toStrictEqual({
             "enabled": true, "internalOnly": false,
             "subnetName": undefined, "subnetResourceId": undefined,
-            "vnetName": "Isrotel-Automation-Resources-vnets"
+            "vnetName": "Test-Automation-Resources-vnets"
         });
     });
 
@@ -307,4 +307,5 @@ describe("ConfigService", () => {
             warnSpy.mockRestore();
         });
     });
+
 });
