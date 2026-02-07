@@ -84,11 +84,11 @@ docker build -t test-orchestrator-runner:latest -f Setup/RunnerCI/Dockerfile .
 
 ### Tag & Push
 ```bash
-docker tag test-orchestrator-base:latest isrotelautomation.azurecr.io/test-orchestrator-base:latest
-docker tag test-orchestrator-runner:latest isrotelautomation.azurecr.io/test-orchestrator-runner:latest
+docker tag test-orchestrator-base:latest test-automation.azurecr.io/test-orchestrator-base:latest
+docker tag test-orchestrator-runner:latest test-automation.azurecr.io/test-orchestrator-runner:latest
 
-docker push isrotelautomation.azurecr.io/test-orchestrator-base:latest
-docker push isrotelautomation.azurecr.io/test-orchestrator-runner:latest
+docker push test-automation.azurecr.io/test-orchestrator-base:latest
+docker push test-automation.azurecr.io/test-orchestrator-runner:latest
 ```
 
 ---
@@ -171,13 +171,13 @@ process.env = {
   // Azure context (required by job/main.ts)
   // ---------------------------------------
   AZURE_SUBSCRIPTION_ID: "11111111-2222-3333-4444-555555555555",
-  RESOURCE_GROUP_NAME: "Isrotel-Automation",
+  RESOURCE_GROUP_NAME: "RG-Automation",
   AZURE_LOCATION: "westeurope", // optional (defaults to "westeurope" if missing)
 
   // ---------------------------------------
   // App Config (required by ConfigService)
   // ---------------------------------------
-  APP_CONFIG_ENDPOINT: "https://isrotel-automation-config.azconfig.io",
+  APP_CONFIG_ENDPOINT: "https://test-automation-config.azconfig.io",
 
   // ---------------------------------------
   // Matrix defaults (used when TEST_CONFIGS_JSON is missing)
@@ -194,7 +194,7 @@ process.env = {
   // IMPORTANT:
   // CONTAINER_IMAGE is required in your current ContainerService implementation because
   // you override the job template and must specify an image.
-  CONTAINER_IMAGE: "isrotelautomation.azurecr.io/test-automation-runner:v42",
+  CONTAINER_IMAGE: "testautomation.azurecr.io/test-automation-runner:v42",
 
   CONTAINER_CPU: "1.0",
   CONTAINER_MEMORY_GB: "2.0",
@@ -217,9 +217,9 @@ process.env = {
   RUNNER_ENV_PASSTHROUGH: JSON.stringify({
     // runner needs this to fetch config by ENV_LABEL
     // (even if you omit it here, your code auto-injects it from orchestrator APP_CONFIG_ENDPOINT)
-    APP_CONFIG_ENDPOINT: "https://isrotel-automation-config.azconfig.io",
+    APP_CONFIG_ENDPOINT: "https://test-automation-config.azconfig.io",
 
-    REPORTS_STORAGE_ACCOUNT: "isrotelreports",
+    REPORTS_STORAGE_ACCOUNT: "test-reports",
     REPORTS_CONTAINER: "allure-reports",
     REPORTS_PREFIX: "runs",
     
