@@ -10,8 +10,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  azureSubscription: "Isrotel-Automation-SC"
-  resourceGroupName: "Isrotel-Automation"
+  azureSubscription: "Test-Automation-SC"
+  resourceGroupName: "RG-Automation"
   functionAppName: "test-orchestrator"
   functionPlanName: "test-orchestrator-plan"
 
@@ -134,3 +134,4 @@ steps:
       appSettings: >
         -WEBSITES_PORT 80
         -WEBSITES_ENABLE_APP_SERVICE_STORAGE false
+
