@@ -194,7 +194,7 @@ process.env = {
   // IMPORTANT:
   // CONTAINER_IMAGE is required in your current ContainerService implementation because
   // you override the job template and must specify an image.
-  CONTAINER_IMAGE: "testautomation.azurecr.io/test-automation-runner:v42",
+  CONTAINER_IMAGE: "test-automation.azurecr.io/test-automation-runner:v42",
 
   CONTAINER_CPU: "1.0",
   CONTAINER_MEMORY_GB: "2.0",
